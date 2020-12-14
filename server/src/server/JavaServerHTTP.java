@@ -34,17 +34,22 @@ public class JavaServerHTTP implements Runnable
 
 	public static void main(String[] args) 
 	{
+		Path path = Paths.get("./PuntiVendita.json");
+		JSONObject json = new JSONObject(str);
+		System.out.println(xml);
+		String string = Files.readString(path, StandardCharsets.US_ASCII);
+		String stringxml = XML.toString(json);
+		Path pathxml = Paths.get("./puntivendita.xml");
+		Files.writeString(pathxml, stringxml);
 		try 
 		{
 			ServerSocket serverConnect = new ServerSocket(PORT);
-			System.out.println("Server started.\nListening for connections on port : " + PORT + " ...\n");
-
 			while (true) 
 			{
 				JavaServerHTTP myServer = new JavaServerHTTP(serverConnect.accept());
 				if (verbose) 
 				{
-					System.out.println("Connecton opened. (" + new Date() + ")");
+					System.out.println("Connessione aperta");
 				}
 				Thread thread = new Thread(myServer);
 				thread.start();
@@ -52,7 +57,7 @@ public class JavaServerHTTP implements Runnable
 		} 
 		catch (IOException e) 
 		{
-			System.err.println("Server Connection error : " + e.getMessage());
+			System.err.println("Connessione al server: " + e.getMessage());
 		}
 	}
 
@@ -95,7 +100,7 @@ public class JavaServerHTTP implements Runnable
 			} 
 			else 
 			{
-				if (fileRequested.endsWith("/")) 
+				if (fileRequested.endsWith("@")) 
 				{
 					fileRequested += DEFAULT_FILE;
 				}
@@ -134,13 +139,13 @@ public class JavaServerHTTP implements Runnable
 			} 
 			catch (IOException ioe) 
 			{
-				System.err.println("Error with file not found exception : " + ioe.getMessage());
+				System.err.println("Errore");
 			}
 
 		} 
 		catch (IOException ioe) 
 		{
-			System.err.println("Server error : " + ioe);
+			System.err.println("Errore server");
 		} 
 		finally 
 		{
@@ -153,12 +158,12 @@ public class JavaServerHTTP implements Runnable
 			} 
 			catch (Exception e) 
 			{
-				System.err.println("Error closing stream : " + e.getMessage());
+				System.err.println("Errore server 2");
 			} 
 
 			if (verbose) 
 			{
-				System.out.println("Connection closed.\n");
+				System.out.println("Connessione Chiusa\n");
 			}
 		}
 
@@ -200,7 +205,7 @@ public class JavaServerHTTP implements Runnable
 	private void fileNotFound(PrintWriter out, OutputStream dataOut, String fileRequested) throws IOException 
 	{
 
-		if ((!(fileRequested.endsWith("/")))&&!(fileRequested.endsWith(".html")))
+		if ((!(fileRequested.endsWith("/")))&&!(fileRequested.endsWith(".html"))&&!(fileRequested.endsWith(".xml")))
 		{
 			File file = new File(WEB_ROOT, PAGE_MOVED_PERMANENTLY);
 			int fileLength = (int) file.length();
